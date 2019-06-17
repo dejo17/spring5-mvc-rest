@@ -1,4 +1,4 @@
-package hr.scorpiusmobile.springmvcrest.api.model;
+package hr.scorpiusmobile.springmvcrest.api.v1.model;
 
 import lombok.Data;
 
