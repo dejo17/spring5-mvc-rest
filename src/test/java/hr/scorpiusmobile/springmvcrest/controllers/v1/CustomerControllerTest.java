@@ -17,8 +17,7 @@ import static hr.scorpiusmobile.springmvcrest.controllers.v1.AbstractRestControl
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -73,7 +72,7 @@ class CustomerControllerTest {
         when(customerService.createNewCustomer(any())).thenReturn(customerDTO);
 
 
-        mockMvc.perform(put("/api/v1/customers/")
+        mockMvc.perform(post("/api/v1/customers/")
         .contentType(MediaType.APPLICATION_JSON)
         .content(asJsonString(customerDTO)))
                 .andExpect(status().isCreated())
