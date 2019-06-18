@@ -13,10 +13,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 
+import static hr.scorpiusmobile.springmvcrest.controllers.v1.AbstractRestControllerTest.asJsonString;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -59,5 +61,24 @@ class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(1)));
+    }
+
+    @Test
+    void createNewCustomer() throws Exception{
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(1L);
+        customerDTO.setFirstName("Dean");
+
+        when(customerService.createNewCustomer(any())).thenReturn(customerDTO);
+
+
+        mockMvc.perform(put("/api/v1/customers/")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(asJsonString(customerDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstName", equalTo("Dean")))
+                .andExpect(jsonPath("$.id", equalTo(1)));
+
     }
 }

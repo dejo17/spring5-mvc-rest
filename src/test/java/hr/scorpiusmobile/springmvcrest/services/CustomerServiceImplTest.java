@@ -25,6 +25,8 @@ class CustomerServiceImplTest {
     @InjectMocks
     CustomerServiceImpl customerService;
 
+    CustomerMapper customerMapper = CustomerMapper.INSTANCE;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -53,5 +55,22 @@ class CustomerServiceImplTest {
         assertNotNull(returnedCustomer);
         assertEquals(returnedCustomer.getId(), 1L);
         assertEquals(returnedCustomer.getFirstName(), "Djuro");
+    }
+
+    @Test
+    void createNewCustomer() throws Exception{
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(1L);
+        customerDTO.setFirstName("Dean");
+
+        when(customerRepository.save(any())).thenReturn(customerMapper.customerDTOtoCustomer(customerDTO));
+
+        CustomerDTO returnedCustomer = customerService.createNewCustomer(customerDTO);
+
+        assertNotNull(returnedCustomer);
+        assertEquals(customerDTO.getId(), returnedCustomer.getId());
+        verify(customerRepository, times(1)).save(any());
+
     }
 }
