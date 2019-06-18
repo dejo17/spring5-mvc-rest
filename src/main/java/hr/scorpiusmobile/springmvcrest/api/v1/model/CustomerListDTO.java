@@ -7,5 +7,5 @@ import java.util.List;
 
 @Data
 public class CustomerListDTO {
-    private List<Customer> customers;
+    private List<CustomerDTO> customers;
 }
