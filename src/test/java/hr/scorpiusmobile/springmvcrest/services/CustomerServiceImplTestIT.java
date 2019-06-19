@@ -6,6 +6,7 @@ import hr.scorpiusmobile.springmvcrest.dataloader.DataLoader;
 import hr.scorpiusmobile.springmvcrest.domain.Customer;
 import hr.scorpiusmobile.springmvcrest.repositories.CategoryRepository;
 import hr.scorpiusmobile.springmvcrest.repositories.CustomerRepository;
+import hr.scorpiusmobile.springmvcrest.repositories.VendorRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,8 @@ class CustomerServiceImplTestIT {
     CategoryRepository categoryRepository;
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    VendorRepository vendorRepository;
 
     CustomerService customerService;
 
@@ -42,7 +45,7 @@ class CustomerServiceImplTestIT {
 
         log.debug("Loading customer data in integration test");
 
-        DataLoader dataLoader = new DataLoader(categoryRepository, customerRepository);
+        DataLoader dataLoader = new DataLoader(categoryRepository, customerRepository, vendorRepository);
         dataLoader.run();
         customerService = new CustomerServiceImpl(customerRepository, CustomerMapper.INSTANCE);
     }
