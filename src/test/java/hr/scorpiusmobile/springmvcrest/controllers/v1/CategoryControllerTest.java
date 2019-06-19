@@ -1,6 +1,8 @@
 package hr.scorpiusmobile.springmvcrest.controllers.v1;
 
 import hr.scorpiusmobile.springmvcrest.api.v1.model.CategoryDTO;
+import hr.scorpiusmobile.springmvcrest.controllers.RestResponseEntityExceptionHandler;
+import hr.scorpiusmobile.springmvcrest.exceptions.ResourceNotFoundException;
 import hr.scorpiusmobile.springmvcrest.services.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +36,7 @@ class CategoryControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).setControllerAdvice(new RestResponseEntityExceptionHandler()).build();
     }
 
     @Test
@@ -50,7 +52,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void getCategroyByName() throws Exception {
+    void getCategoryByName() throws Exception {
 
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setName("Pero");
@@ -60,5 +62,15 @@ class CategoryControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalToIgnoringCase("Pero")));
+    }
+
+    @Test
+    void getCategoryByNameNotFound() throws Exception {
+
+        when(categoryService.getCategoryByName(anyString())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get("/api/v1/categories/Pero")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

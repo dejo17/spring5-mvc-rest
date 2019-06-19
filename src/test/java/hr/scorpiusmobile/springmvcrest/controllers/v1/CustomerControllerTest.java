@@ -1,6 +1,8 @@
 package hr.scorpiusmobile.springmvcrest.controllers.v1;
 
 import hr.scorpiusmobile.springmvcrest.api.v1.model.CustomerDTO;
+import hr.scorpiusmobile.springmvcrest.controllers.RestResponseEntityExceptionHandler;
+import hr.scorpiusmobile.springmvcrest.exceptions.ResourceNotFoundException;
 import hr.scorpiusmobile.springmvcrest.services.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +37,7 @@ class CustomerControllerTest {
         MockitoAnnotations.initMocks(this);
 
         customerController = new CustomerController(customerService);
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(customerController).setControllerAdvice(new RestResponseEntityExceptionHandler()).build();
     }
 
     @Test
@@ -131,5 +133,13 @@ class CustomerControllerTest {
                 .andExpect(status().isOk());
         verify(customerService, times(1)).deleteCustomerById(anyLong());
     }
+    @Test
+    void getCategoryByNameNotFound() throws Exception {
 
+        when(customerService.getCustomerById(anyLong())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 }

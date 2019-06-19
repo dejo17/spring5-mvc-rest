@@ -2,7 +2,9 @@ package hr.scorpiusmobile.springmvcrest.services;
 
 import hr.scorpiusmobile.springmvcrest.api.v1.mapper.CustomerMapper;
 import hr.scorpiusmobile.springmvcrest.api.v1.model.CustomerDTO;
+import hr.scorpiusmobile.springmvcrest.controllers.RestResponseEntityExceptionHandler;
 import hr.scorpiusmobile.springmvcrest.domain.Customer;
+import hr.scorpiusmobile.springmvcrest.exceptions.ResourceNotFoundException;
 import hr.scorpiusmobile.springmvcrest.repositories.CustomerRepository;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO getCustomerById(Long id) {
-        return customerMapper.customerToCustomerDTO(customerRepository.getOne(id));
+        return customerRepository
+                .findById(id)
+                .map(customerMapper::customerToCustomerDTO)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -67,7 +72,7 @@ public class CustomerServiceImpl implements CustomerService {
                 customer.setLastName(customerDTO.getLastName());
             }
             return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
-        }).orElseThrow(RuntimeException::new);
+        }).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override

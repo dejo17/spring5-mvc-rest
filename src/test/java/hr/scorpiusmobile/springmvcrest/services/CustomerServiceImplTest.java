@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -43,12 +44,12 @@ class CustomerServiceImplTest {
     }
 
     @Test
-    void getCustomerById() {
+    void getCustomerById() throws Exception{
         Customer customer = new Customer();
         customer.setFirstName("Djuro");
         customer.setLastName("Peric");
         customer.setId(1L);
-        when(customerRepository.getOne(anyLong())).thenReturn(customer);
+        when(customerRepository.findById(anyLong())).thenReturn(Optional.ofNullable(customer));
 
         CustomerDTO returnedCustomer = customerService.getCustomerById(1L);
 
