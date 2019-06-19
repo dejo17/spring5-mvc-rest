@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerServiceImpl implements CustomerService{
+public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
@@ -43,5 +43,35 @@ public class CustomerServiceImpl implements CustomerService{
 
         CustomerDTO savedCustomerDTO = customerMapper.customerToCustomerDTO(savedCustomer);
         return savedCustomerDTO;
+    }
+
+    @Override
+    public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
+
+        Customer customer = customerMapper.customerDTOtoCustomer(customerDTO);
+        customer.setId(id);
+        Customer savedCustomer = customerRepository.save(customer);
+
+        CustomerDTO savedCustomerDTO = customerMapper.customerToCustomerDTO(savedCustomer);
+        return savedCustomerDTO;
+    }
+
+    @Override
+    public CustomerDTO patchCustomer(Long id, CustomerDTO customerDTO) {
+
+        return customerRepository.findById(id).map(customer -> {
+            if (customerDTO.getFirstName() != null) {
+                customer.setFirstName(customerDTO.getFirstName());
+            }
+            if (customerDTO.getLastName() != null) {
+                customer.setLastName(customerDTO.getLastName());
+            }
+            return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+        }).orElseThrow(RuntimeException::new);
+    }
+
+    @Override
+    public void deleteCustomerById(Long id) {
+        customerRepository.deleteById(id);  //todo error handling
     }
 }

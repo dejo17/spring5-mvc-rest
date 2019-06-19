@@ -73,4 +73,12 @@ class CustomerServiceImplTest {
         verify(customerRepository, times(1)).save(any());
 
     }
+
+    @Test
+    void testDeleteCustomer() throws Exception {
+
+        customerService.deleteCustomerById(1L);
+        verify(customerRepository, times(1)).deleteById(anyLong());
+    }
+
 }
