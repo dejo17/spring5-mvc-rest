@@ -3,10 +3,7 @@ package hr.scorpiusmobile.springmvcrest.controllers.v1;
 import hr.scorpiusmobile.springmvcrest.api.v1.model.CustomerDTO;
 import hr.scorpiusmobile.springmvcrest.api.v1.model.CustomerListDTO;
 import hr.scorpiusmobile.springmvcrest.services.CustomerService;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
