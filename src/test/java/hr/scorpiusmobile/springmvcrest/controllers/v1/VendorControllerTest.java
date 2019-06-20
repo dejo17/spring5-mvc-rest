@@ -16,12 +16,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 
+import static hr.scorpiusmobile.springmvcrest.controllers.v1.AbstractRestControllerTest.asJsonString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,25 +55,92 @@ class VendorControllerTest {
     }
 
     @Test
-    void getVendorByName() throws Exception{
+    void getVendorById() throws Exception{
 
         VendorDTO vendorDTO = new VendorDTO();
         vendorDTO.setName("Primorka");
-        when(vendorService.getVendorByName(anyString())).thenReturn(vendorDTO);
+        vendorDTO.setId(1L);
+        when(vendorService.getVendorById(anyLong())).thenReturn(vendorDTO);
 
-        mockMvc.perform(get("/api/v1/vendors/Primorka")
+        mockMvc.perform(get("/api/v1/vendors/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", equalToIgnoringCase("Primorka")));
+                .andExpect(jsonPath("$.name", equalToIgnoringCase("Primorka")))
+        .andExpect(jsonPath("$.id", equalTo(1)));
     }
 
     @Test
-    void getVendorByNameNotFound() throws Exception {
+    void getVendorByIdNotFound() throws Exception {
 
-        when(vendorService.getVendorByName(anyString())).thenThrow(ResourceNotFoundException.class);
+        when(vendorService.getVendorById(anyLong())).thenThrow(ResourceNotFoundException.class);
 
-        mockMvc.perform(get("/api/v1/vendors/Primorka")
+        mockMvc.perform(get("/api/v1/vendors/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void testCreateNewVendor() throws Exception {
+
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("Dean");
+
+        when(vendorService.createNewVendor(any())).thenReturn(vendorDTO);
+
+
+        mockMvc.perform(post("/api/v1/vendors/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendorDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name", equalTo("Dean")));
+
+    }
+
+    @Test
+    void testUpdateVendor() throws Exception {
+
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setId(1L);
+        vendorDTO.setName("Dean");
+
+        when(vendorService.updateVendor(anyLong(), any())).thenReturn(vendorDTO);
+
+
+        mockMvc.perform(put("/api/v1/vendors/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendorDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo("Dean")))
+                .andExpect(jsonPath("$.id", equalTo(1)));
+
+    }
+
+    @Test
+    void testPatchVendor() throws Exception {
+
+        VendorDTO vendor = new VendorDTO();
+        vendor.setName("Mirko");
+
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName(vendor.getName());
+
+        when(vendorService.patchVendor(anyLong(), any())).thenReturn(vendorDTO);
+
+
+        mockMvc.perform(patch("/api/v1/vendors/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendor)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo("Mirko")));
+
+    }
+
+    @Test
+    public void testDeleteVendor() throws Exception {
+
+        mockMvc.perform(delete("/api/v1/vendors/1"))
+                .andExpect(status().isOk());
+        verify(vendorService, times(1)).deleteVendorById(anyLong());
+    }
+
 }

@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface VendorService {
 
-    List<VendorDTO> getAllVendors();
-    VendorDTO getVendorByName(String name);
-
+    public List<VendorDTO> getAllVendors();
+    public VendorDTO getVendorById(Long id);
+    public VendorDTO createNewVendor(VendorDTO vendorDTO);  //for post
+    public VendorDTO updateVendor(Long id, VendorDTO vendorDTO);  //for put
+    public VendorDTO patchVendor(Long id, VendorDTO vendorDTO);    //for patch
+    void deleteVendorById(Long id); //for delete
 }

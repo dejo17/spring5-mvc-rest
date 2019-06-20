@@ -1,6 +1,7 @@
 package hr.scorpiusmobile.springmvcrest.services;
 
 import hr.scorpiusmobile.springmvcrest.api.v1.mapper.VendorMapper;
+import hr.scorpiusmobile.springmvcrest.api.v1.model.CustomerDTO;
 import hr.scorpiusmobile.springmvcrest.api.v1.model.VendorDTO;
 import hr.scorpiusmobile.springmvcrest.domain.Vendor;
 import hr.scorpiusmobile.springmvcrest.repositories.VendorRepository;
@@ -61,18 +62,42 @@ class VendorServiceImplTest {
     }
 
     @Test
-    void getVendorByName() {
+    void getVendorById() {
 
         Vendor vendor = new  Vendor();
         vendor.setId(ID_1);
         vendor.setName(NAME_1);
 
-        when(vendorRepository.findByName(anyString())).thenReturn(vendor);
+        when(vendorRepository.getOne(anyLong())).thenReturn(vendor);
 
-        VendorDTO returnedVendor = vendorService.getVendorByName(NAME_1);
+        VendorDTO returnedVendor = vendorService.getVendorById(ID_1);
 
         assertEquals(ID_1, returnedVendor.getId());
         assertEquals(NAME_1, returnedVendor.getName());
 
+    }
+
+    @Test
+    void createNewCustomer() throws Exception{
+
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setId(1L);
+        vendorDTO.setName("Dean");
+
+        when(vendorRepository.save(any())).thenReturn(vendorMapper.vendorDTOtoVendor(vendorDTO));
+
+        VendorDTO returnedVendor = vendorService.createNewVendor(vendorDTO);
+
+        assertNotNull(returnedVendor);
+        assertEquals(vendorDTO.getId(), returnedVendor.getId());
+        verify(vendorRepository, times(1)).save(any());
+
+    }
+
+    @Test
+    void testDeleteCustomer() throws Exception {
+
+        vendorService.deleteVendorById(1L);
+        verify(vendorRepository, times(1)).deleteById(anyLong());
     }
 }

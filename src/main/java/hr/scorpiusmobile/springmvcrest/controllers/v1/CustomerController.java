@@ -21,6 +21,7 @@ public class CustomerController {
     public CustomerListDTO getAllCustomers(){
         return new CustomerListDTO(customerService.listAllCustomers());
     }
+
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public CustomerDTO getCustomerById(@PathVariable String id){

@@ -134,7 +134,7 @@ class CustomerControllerTest {
         verify(customerService, times(1)).deleteCustomerById(anyLong());
     }
     @Test
-    void getCategoryByNameNotFound() throws Exception {
+    void getCustomerByNameNotFound() throws Exception {
 
         when(customerService.getCustomerById(anyLong())).thenThrow(ResourceNotFoundException.class);
 
