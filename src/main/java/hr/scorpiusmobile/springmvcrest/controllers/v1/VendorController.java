@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/vendors/")
+@RequestMapping("/api/v1/vendors")
 public class VendorController {
 
 

@@ -45,7 +45,8 @@ class CustomerControllerTest {
 
         when(customerService.listAllCustomers()).thenReturn(Arrays.asList(new CustomerDTO(), new CustomerDTO()));
 
-        mockMvc.perform(get("/api/v1/customers/")
+        mockMvc.perform(get("/api/v1/customers")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customers", hasSize(2)));
@@ -59,6 +60,7 @@ class CustomerControllerTest {
         when(customerService.getCustomerById(anyLong())).thenReturn(customerDTO);
 
         mockMvc.perform(get("/api/v1/customers/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(1)));
@@ -74,7 +76,8 @@ class CustomerControllerTest {
         when(customerService.createNewCustomer(any())).thenReturn(customerDTO);
 
 
-        mockMvc.perform(post("/api/v1/customers/")
+        mockMvc.perform(post("/api/v1/customers")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
                 .andExpect(status().isCreated())
@@ -95,6 +98,7 @@ class CustomerControllerTest {
 
 
         mockMvc.perform(put("/api/v1/customers/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
                 .andExpect(status().isOk())
@@ -118,6 +122,7 @@ class CustomerControllerTest {
 
 
         mockMvc.perform(patch("/api/v1/customers/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customer)))
                 .andExpect(status().isOk())
@@ -139,6 +144,7 @@ class CustomerControllerTest {
         when(customerService.getCustomerById(anyLong())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(get("/api/v1/customers/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }

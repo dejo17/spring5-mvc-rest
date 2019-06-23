@@ -48,7 +48,8 @@ class VendorControllerTest {
     void getAllVendors() throws Exception{
         when(vendorService.getAllVendors()).thenReturn(Arrays.asList(new VendorDTO(), new VendorDTO()));
 
-        mockMvc.perform(get("/api/v1/vendors/")
+        mockMvc.perform(get("/api/v1/vendors")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendors", hasSize(2)));
@@ -63,6 +64,7 @@ class VendorControllerTest {
         when(vendorService.getVendorById(anyLong())).thenReturn(vendorDTO);
 
         mockMvc.perform(get("/api/v1/vendors/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalToIgnoringCase("Primorka")))
@@ -75,6 +77,7 @@ class VendorControllerTest {
         when(vendorService.getVendorById(anyLong())).thenThrow(ResourceNotFoundException.class);
 
         mockMvc.perform(get("/api/v1/vendors/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -88,7 +91,8 @@ class VendorControllerTest {
         when(vendorService.createNewVendor(any())).thenReturn(vendorDTO);
 
 
-        mockMvc.perform(post("/api/v1/vendors/")
+        mockMvc.perform(post("/api/v1/vendors")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(vendorDTO)))
                 .andExpect(status().isCreated())
@@ -107,6 +111,7 @@ class VendorControllerTest {
 
 
         mockMvc.perform(put("/api/v1/vendors/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(vendorDTO)))
                 .andExpect(status().isOk())
@@ -128,6 +133,7 @@ class VendorControllerTest {
 
 
         mockMvc.perform(patch("/api/v1/vendors/1")
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(vendor)))
                 .andExpect(status().isOk())
