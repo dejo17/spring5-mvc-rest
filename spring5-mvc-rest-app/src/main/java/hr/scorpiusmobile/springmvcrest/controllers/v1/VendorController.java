@@ -27,9 +27,7 @@ public class VendorController {
     @ResponseStatus(HttpStatus.OK)
     public VendorDTO getVendorByName(@PathVariable Long id) {
         return vendorService.getVendorById(id);
-
     }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public VendorDTO createNewVendor(@RequestBody VendorDTO vendorDTO){
